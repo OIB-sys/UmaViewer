@@ -1,4 +1,4 @@
-namespace LibMMD.Model
+﻿namespace LibMMD.Model
 {
     public class Part
     {

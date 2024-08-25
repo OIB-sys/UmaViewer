@@ -1,4 +1,4 @@
-using Gallop;
+﻿using Gallop;
 using System;
 
 [System.Serializable]

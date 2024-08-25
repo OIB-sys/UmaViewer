@@ -1,4 +1,4 @@
-var StandaloneFileBrowserWebGLPlugin = {
+﻿var StandaloneFileBrowserWebGLPlugin = {
     // Open file.
     // gameObjectNamePtr: Unique GameObject name. Required for calling back unity with SendMessage.
     // methodNamePtr: Callback method name on given GameObject.

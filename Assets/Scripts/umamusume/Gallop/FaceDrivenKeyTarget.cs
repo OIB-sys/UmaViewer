@@ -1,4 +1,4 @@
-using Gallop.Live.Cutt;
+﻿using Gallop.Live.Cutt;
 using System;
 using System.Collections.Generic;
 using System.Linq;

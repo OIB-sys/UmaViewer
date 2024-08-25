@@ -1,4 +1,4 @@
-/*! \mainpage
+﻿/*! \mainpage
 
 \htmlonly <iframe width="854" height="480" src="https://www.youtube.com/embed/on7wAz0fsGg" frameborder="0" allowfullscreen></iframe>\endhtmlonly
 <br>Welcome to PuppetMaster, an advanced character physics tool for Unity!

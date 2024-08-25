@@ -1,4 +1,4 @@
-Shader "VRM/UnlitTransparentZWrite"
+﻿Shader "VRM/UnlitTransparentZWrite"
 {
 Properties {
 	_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}

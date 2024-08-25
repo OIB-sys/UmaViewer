@@ -1,4 +1,4 @@
-HSV color picker using Unity UI.
+﻿HSV color picker using Unity UI.
 Github https://github.com/judah4/HSV-Color-Picker-Unity
 
 Usage:

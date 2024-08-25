@@ -1,4 +1,4 @@
-
+﻿
 Shader "Uma/Eye" {
     Properties {
         _MainTex ("Eye Diffuse (_eye0)", 2D) = "white" {}

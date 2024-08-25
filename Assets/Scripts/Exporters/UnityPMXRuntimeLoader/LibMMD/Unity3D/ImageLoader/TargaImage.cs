@@ -1,4 +1,4 @@
-/**
+﻿/**
  * This is a modified library from CodeProject: http://www.codeproject.com/Articles/31702/NET-Targa-Image-Reader
  * It is modified to remove most .NET dependencies and replaced them with Unity equivilents.  This means
  * this code should be able to run on all platforms.

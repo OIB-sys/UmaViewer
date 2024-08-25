@@ -1,4 +1,4 @@
-namespace LibMMD.Reader
+﻿namespace LibMMD.Reader
 {
     public class ModelConfig
     {

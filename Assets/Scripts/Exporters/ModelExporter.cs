@@ -1,4 +1,4 @@
-using Gallop;
+﻿using Gallop;
 using LibMMD.Material;
 using LibMMD.Model;
 using LibMMD.Reader;

@@ -1,4 +1,4 @@
-using CommandUndoRedo;
+﻿using CommandUndoRedo;
 using UnityEngine;
 
 public class TransformGizmoHotkeys : MonoBehaviour

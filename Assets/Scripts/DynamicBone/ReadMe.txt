@@ -1,4 +1,4 @@
-Dynamic Bone apply physics to character's bones or joints.
+﻿Dynamic Bone apply physics to character's bones or joints.
 With simple setup, your character's hair, cloth, breasts or any part will move realistically.
 
 Open Assets/DynamicBone/Demo/Demo1 to see how it works.

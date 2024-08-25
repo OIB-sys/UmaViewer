@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RootMotion;
 using RootMotion.Dynamics;
 using RootMotion.FinalIK;

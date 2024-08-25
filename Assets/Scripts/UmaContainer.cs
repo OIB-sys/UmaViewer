@@ -1,4 +1,4 @@
-using Gallop;
+﻿using Gallop;
 using Gallop.Live.Cutt;
 using RootMotion.Dynamics;
 using RootMotion.FinalIK;

@@ -1,4 +1,4 @@
-
+﻿
 Shader "Uma/Base" {
     Properties {
         _MainTex ("Diffuse (_diff)", 2D) = "white" {}

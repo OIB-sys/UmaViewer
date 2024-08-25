@@ -1,4 +1,4 @@
-
+﻿
 Shader "Uma/Tail" {
     Properties {
         _MainTex ("Diffuse (_diff)", 2D) = "white" {}

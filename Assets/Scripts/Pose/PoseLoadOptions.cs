@@ -1,4 +1,4 @@
-public class PoseLoadOptions
+﻿public class PoseLoadOptions
 {
     public bool
         Root,

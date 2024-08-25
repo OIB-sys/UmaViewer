@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MMD Shader for Unity
  *
  * Copyright 2012 Masataka SUMI, Takahiro INOUE

@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using LibMMD.Model;
 
 namespace LibMMD.Reader

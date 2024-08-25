@@ -1,4 +1,4 @@
-using System.Collections;
+锘縰sing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -40,7 +40,7 @@ public class TextureExporter
         {
             foreach (Material mat in renderer.sharedMaterials)
             {
-                //获得材质的所有属性名，如果改属性名对应的是贴图，提取该贴图
+                //璩囪鍙祹璀颁经鍡ゅ渚嗗厗銉绘硨鎯氬�嬪渚嗗厗鏂ゅ摌璀伴爜钖銉绘埢鍑戒箮钖
                 Shader mat_shader = mat.shader;
                 int p_num = mat_shader.GetPropertyCount();
                 for (int i = 0; i < p_num; i++)
@@ -68,7 +68,7 @@ public class TextureExporter
                                 {
                                     var clip_texture = duplicateTexture(mat_texture);
                                     var pixels = clip_texture.GetPixels(0, 0, clip_texture.width / 4, clip_texture.height);
-                                    clip_texture.Resize(clip_texture.width / 4, clip_texture.height);
+                                    clip_texture.Reinitialize(clip_texture.width / 4, clip_texture.height);
                                     clip_texture.SetPixels(pixels);
 
 
@@ -85,7 +85,7 @@ public class TextureExporter
                 }
             }
         }
-        Debug.Log("提取成功");
+        Debug.Log("鎴诲嚱鎾瑰瓟");
         return textureNames.ToArray();
     }
 }

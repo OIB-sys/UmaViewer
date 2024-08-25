@@ -1,4 +1,4 @@
-using Gallop;
+﻿using Gallop;
 using SFB;
 using System;
 using System.Collections;

@@ -1,4 +1,4 @@
-//Taken and modified from github.com/Shrimpey/Outlined-Diffuse-Shader-Fixed/blob/master/CustomOutline.shader
+﻿//Taken and modified from github.com/Shrimpey/Outlined-Diffuse-Shader-Fixed/blob/master/CustomOutline.shader
 
 Shader "Custom/Outline" {
 	Properties {
