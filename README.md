@@ -73,3 +73,11 @@ and more
 
 ### Special Thank to:
 MarshmallowAndroid: [UmaMusumeExplorer](https://github.com/MarshmallowAndroid/UmaMusumeExplorer) for acb/awb decoder.
+
+
+## Change History
+## 2024/08/25
+Forked from [katboi01/UmaViewer](https://github.com/katboi01/UmaViewer)
+
+## 2024/08/26
+Addition of save function for camera settings
