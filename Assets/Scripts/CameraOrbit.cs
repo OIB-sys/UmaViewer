@@ -1,13 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEditor;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Globalization;
-using TMPro;
-using System.IO;
-using System.Text;
 
 public class CameraOrbit : MonoBehaviour
 {
@@ -25,10 +18,6 @@ public class CameraOrbit : MonoBehaviour
     EventSystem eventSystem;
     bool controlOn;
 
-    bool SaveButtonOn = false;
-    bool LoadButtonOn = false;
-    string CameraPresetPath =  @"Presets\CameraPresets.csv";
-    int DropdownSelectedId = -1;
 
     [Header("Orbit Camera")]
     public GameObject OrbitCamSettingsTab;
@@ -60,33 +49,6 @@ public class CameraOrbit : MonoBehaviour
 
         lookRotation = transform.localRotation;
         instance = this;
-
-        UpdateDropdown();
-    }
-
-    void UpdateDropdown()
-    {
-
-        bool isFileExists = true;
-        if (!File.Exists(CameraPresetPath)) {
-            return;
-        }
-
-        string[] presets = File.ReadAllLines(CameraPresetPath);
-        
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
-
-        var dropdownMembers = new List<string>(){};
-        TargetDropdown.ClearOptions();
-        foreach (var preset in presets) {
-            string[] cells = preset.Split(',');
-            dropdownMembers.Add(cells[0]);
-        }
-        TargetDropdown.AddOptions(dropdownMembers);
-        if(DropdownSelectedId==-1){
-            DropdownSelectedId=0;
-        }
-        TargetDropdown.value=DropdownSelectedId;
     }
 
     void Update()
@@ -240,140 +202,6 @@ public class CameraOrbit : MonoBehaviour
             FreeCamRight = false;
         }
 
-    }
-
-    public void SaveCamera()
-    {
-        //UnityEngine.Debug.Log("Save");
-        Transform curTransform;
-
-        TMP_InputField TargetInputField = GameObject.Find("CameraNameInputField").GetComponent<TMP_InputField>();
-        string SavePresetName = TargetInputField.text;
-        
-        if(SavePresetName =="" ){
-            return;
-        }
-
-        curTransform = transform;
-
-        var presetMembers = new List<string>(){};
-        
-        presetMembers.Add(SavePresetName);
-
-        presetMembers.Add(CameraMode.ToString());
-
-        presetMembers.Add(curTransform.position.x.ToString());
-        presetMembers.Add(curTransform.position.y.ToString());
-        presetMembers.Add(curTransform.position.z.ToString());
-
-        if(CameraMode == 0){
-            presetMembers.Add(curTransform.localRotation.x.ToString());
-            presetMembers.Add(curTransform.localRotation.y.ToString());
-            presetMembers.Add(curTransform.localRotation.z.ToString());
-
-            presetMembers.Add(OrbitCamFovSlider.value.ToString());
-            presetMembers.Add(OrbitCamZoomSlider.value.ToString());
-            presetMembers.Add(OrbitCamZoomSpeedSlider.value.ToString());
-            presetMembers.Add(OrbitCamTargetHeightSlider.value.ToString());
-            presetMembers.Add(OrbitCamHeightSlider.value.ToString());
-            presetMembers.Add(OrbitCamRotationSlider.value.ToString());
-            presetMembers.Add(OrbitCamSpeedSlider.value.ToString());
-        }else if(CameraMode == 1){
-            presetMembers.Add(lookRotation.x.ToString());
-            presetMembers.Add(lookRotation.y.ToString());
-            presetMembers.Add(FreeCamRotationSlider.value.ToString());
-
-            presetMembers.Add(FreeCamFovSlider.value.ToString());
-            presetMembers.Add(FreeCamRotationSlider.value.ToString());
-            presetMembers.Add(FreeCamMoveSpeedSlider.value.ToString());
-            presetMembers.Add(FreeCamRotateSpeedSlider.value.ToString());
-        }else{
-            return;
-        }
-
-        bool isFileExists = true;
-        if (!File.Exists (CameraPresetPath)) {
-            isFileExists = false;
-        }
-
-        StreamWriter fp = new StreamWriter(CameraPresetPath, isFileExists, System.Text.Encoding.UTF8);
-
-        string[] preset = { SavePresetName, SavePresetName + "dummy", "dummy" + SavePresetName };
-        string presetLine = string.Join(",", presetMembers);
-        fp.WriteLine(presetLine);
-
-        fp.Close();
-
-        UpdateDropdown();
-    }
-
-    public void LoadCamera()
-    {
-
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
-        int TargetPresetLabel = TargetDropdown.value;
-        string TargetPresetName = TargetDropdown.captionText.text;
-
-        if(TargetPresetName == ""){
-            return;
-        }
-
-        string[] presets = File.ReadAllLines(CameraPresetPath);
-        string[] targetPreset = presets[TargetPresetLabel].Split(',');
-
-        int CameraMode_tmp = int.Parse(targetPreset[1]);
-        CameraModeDropdown.value = CameraMode_tmp;
-
-        transform.position = new Vector3(float.Parse(targetPreset[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[3], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[4], CultureInfo.InvariantCulture.NumberFormat));
-        transform.localRotation = Quaternion.Euler(float.Parse(targetPreset[5], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[6], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[7], CultureInfo.InvariantCulture.NumberFormat));
-
-        if(CameraMode_tmp == 0){
-            OrbitCamFovSlider.value = float.Parse(targetPreset[8], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamZoomSlider.value = float.Parse(targetPreset[9], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamZoomSpeedSlider.value = float.Parse(targetPreset[10], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamTargetHeightSlider.value = float.Parse(targetPreset[11], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamHeightSlider.value = float.Parse(targetPreset[12], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamRotationSlider.value = float.Parse(targetPreset[13], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamSpeedSlider.value = float.Parse(targetPreset[14], CultureInfo.InvariantCulture.NumberFormat);
-        }else if(CameraMode_tmp == 1){
-            FreeCamFovSlider.value = float.Parse(targetPreset[8], CultureInfo.InvariantCulture.NumberFormat);
-            FreeCamRotationSlider.value = float.Parse(targetPreset[9], CultureInfo.InvariantCulture.NumberFormat);
-            FreeCamMoveSpeedSlider.value = float.Parse(targetPreset[10], CultureInfo.InvariantCulture.NumberFormat);
-            FreeCamRotateSpeedSlider.value = float.Parse(targetPreset[11], CultureInfo.InvariantCulture.NumberFormat);
-        }else{
-            return;
-        }
-
-
-    }
-
-    public void onClickDel()
-    {
-
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
-        int TargetPresetLabel = TargetDropdown.value;
-        string TargetPresetName = TargetDropdown.captionText.text;
-
-        if(TargetPresetName == ""){
-            return;
-        }
-
-        DropdownSelectedId=-1;
-
-        List<string> presets = new List<string>();
-        presets.AddRange(File.ReadAllLines(CameraPresetPath));
-        presets.RemoveAt(TargetPresetLabel);
-
-        File.WriteAllLines(CameraPresetPath, presets, System.Text.Encoding.UTF8);
-
-        UpdateDropdown();
-
-    }
-
-    public void onDropdownValueChanged()
-    {
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
-        DropdownSelectedId = TargetDropdown.value;
     }
     #endregion
 }
