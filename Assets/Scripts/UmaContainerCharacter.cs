@@ -42,6 +42,8 @@ public class UmaContainerCharacter : UmaContainer
     public float EyeHeight;
     public bool EnableEyeTracking = true;
     public Material FaceMaterial;
+    public Material EyeMaterial;
+    public Material MayuMaterial;
 
     [Header("Cheek")]
     public Texture CheekTex_0;
@@ -87,6 +89,8 @@ public class UmaContainerCharacter : UmaContainer
     private PuppetMaster PuppetMaster;
     private List<Transform> _humanoidBones;
     private UIHandleCharacterRoot handleRoot;
+
+    public GameObject Light;
 
     public void Initialize(bool smile)
     {
@@ -843,6 +847,21 @@ public class UmaContainerCharacter : UmaContainer
                 }
 
                 m.SetFloat("_StencilMask", CharaEntry.Id);
+
+                if (m.name.EndsWith("eye")){
+                    Color curLight = Light.GetComponent<Light>().color;
+                    curLight.a = 0;
+                    EyeMaterial = m;
+                    m.SetColor("_ToonBrightColor",curLight);
+                }
+
+                if (m.name.EndsWith("mayu")){
+                    Color curLight = Light.GetComponent<Light>().color;
+                    curLight.a = 0;
+                    MayuMaterial = m;
+                    m.SetColor("_CharaColor",curLight);
+                }
+
             }
         }
 

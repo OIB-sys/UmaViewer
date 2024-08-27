@@ -39,6 +39,8 @@ public class UmaViewerBuilder : MonoBehaviour
 
     public GameObject LiveControllerPrefab;
 
+    public GameObject Light;
+
     private void Awake()
     {
         Instance = this;
@@ -49,6 +51,8 @@ public class UmaViewerBuilder : MonoBehaviour
         int id = chara.Id;
         var umaContainer = new GameObject($"Chara_{id}_{costumeId}").AddComponent<UmaContainerCharacter>();
         CurrentUMAContainer = umaContainer;
+
+        umaContainer.Light = Light;
 
         if (mini)
         {

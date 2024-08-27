@@ -51,6 +51,12 @@ public class CameraOrbit : MonoBehaviour
     bool FreeCamRight = false;
     private Quaternion lookRotation;
 
+    TMP_InputField TargetInputField;
+    TMP_Dropdown TargetDropdown;
+    Toggle TargetLoadModeToggle;
+
+    bool isLoadModeToggle = true;
+
     void Start()
     {
         OrbitCamZoomSlider.minValue = camDistMin;
@@ -60,6 +66,13 @@ public class CameraOrbit : MonoBehaviour
 
         lookRotation = transform.localRotation;
         instance = this;
+
+        TargetInputField = GameObject.Find("CameraNameInputField").GetComponent<TMP_InputField>();
+
+        TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
+
+        TargetLoadModeToggle = GameObject.Find("LoadModeToggle").GetComponent<Toggle>();
+        isLoadModeToggle = TargetLoadModeToggle.isOn;
 
         UpdateDropdown();
     }
@@ -73,8 +86,6 @@ public class CameraOrbit : MonoBehaviour
         }
 
         string[] presets = File.ReadAllLines(CameraPresetPath);
-        
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
 
         var dropdownMembers = new List<string>(){};
         TargetDropdown.ClearOptions();
@@ -245,16 +256,11 @@ public class CameraOrbit : MonoBehaviour
     public void SaveCamera()
     {
         //UnityEngine.Debug.Log("Save");
-        Transform curTransform;
-
-        TMP_InputField TargetInputField = GameObject.Find("CameraNameInputField").GetComponent<TMP_InputField>();
         string SavePresetName = TargetInputField.text;
-        
+
         if(SavePresetName =="" ){
             return;
         }
-
-        curTransform = transform;
 
         var presetMembers = new List<string>(){};
         
@@ -262,15 +268,19 @@ public class CameraOrbit : MonoBehaviour
 
         presetMembers.Add(CameraMode.ToString());
 
-        presetMembers.Add(curTransform.position.x.ToString());
-        presetMembers.Add(curTransform.position.y.ToString());
-        presetMembers.Add(curTransform.position.z.ToString());
+        //Position
+        presetMembers.Add(transform.position.x.ToString());
+        presetMembers.Add(transform.position.y.ToString());
+        presetMembers.Add(transform.position.z.ToString());
+
+        //Rotation
+        presetMembers.Add(transform.eulerAngles.x.ToString());
+        presetMembers.Add(transform.eulerAngles.y.ToString());
+        presetMembers.Add(transform.eulerAngles.z.ToString());
 
         if(CameraMode == 0){
-            presetMembers.Add(curTransform.localRotation.x.ToString());
-            presetMembers.Add(curTransform.localRotation.y.ToString());
-            presetMembers.Add(curTransform.localRotation.z.ToString());
 
+            //orbit camera value
             presetMembers.Add(OrbitCamFovSlider.value.ToString());
             presetMembers.Add(OrbitCamZoomSlider.value.ToString());
             presetMembers.Add(OrbitCamZoomSpeedSlider.value.ToString());
@@ -279,17 +289,36 @@ public class CameraOrbit : MonoBehaviour
             presetMembers.Add(OrbitCamRotationSlider.value.ToString());
             presetMembers.Add(OrbitCamSpeedSlider.value.ToString());
         }else if(CameraMode == 1){
-            presetMembers.Add(lookRotation.x.ToString());
-            presetMembers.Add(lookRotation.y.ToString());
-            presetMembers.Add(FreeCamRotationSlider.value.ToString());
 
+            //free camera value
             presetMembers.Add(FreeCamFovSlider.value.ToString());
             presetMembers.Add(FreeCamRotationSlider.value.ToString());
             presetMembers.Add(FreeCamMoveSpeedSlider.value.ToString());
             presetMembers.Add(FreeCamRotateSpeedSlider.value.ToString());
+
+            //padding
+            presetMembers.Add("");
+            presetMembers.Add("");
+            presetMembers.Add("");
         }else{
             return;
         }
+
+        //Directional light position
+        presetMembers.Add(Light.transform.position.x.ToString());
+        presetMembers.Add(Light.transform.position.y.ToString());
+        presetMembers.Add(Light.transform.position.z.ToString());
+
+        //Directional light rotation
+        presetMembers.Add(Light.transform.eulerAngles.x.ToString());
+        presetMembers.Add(Light.transform.eulerAngles.y.ToString());
+        presetMembers.Add(Light.transform.eulerAngles.z.ToString());
+
+        //Directional light color
+        presetMembers.Add(Light.GetComponent<Light>().color.r.ToString());
+        presetMembers.Add(Light.GetComponent<Light>().color.g.ToString());
+        presetMembers.Add(Light.GetComponent<Light>().color.b.ToString());
+        presetMembers.Add(Light.GetComponent<Light>().color.a.ToString());
 
         bool isFileExists = true;
         if (!File.Exists (CameraPresetPath)) {
@@ -297,8 +326,6 @@ public class CameraOrbit : MonoBehaviour
         }
 
         StreamWriter fp = new StreamWriter(CameraPresetPath, isFileExists, System.Text.Encoding.UTF8);
-
-        string[] preset = { SavePresetName, SavePresetName + "dummy", "dummy" + SavePresetName };
         string presetLine = string.Join(",", presetMembers);
         fp.WriteLine(presetLine);
 
@@ -309,14 +336,15 @@ public class CameraOrbit : MonoBehaviour
 
     public void LoadCamera()
     {
-
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
-        int TargetPresetLabel = TargetDropdown.value;
         string TargetPresetName = TargetDropdown.captionText.text;
 
         if(TargetPresetName == ""){
             return;
         }
+        
+        int TargetPresetLabel = TargetDropdown.value;
+        
+        System.IFormatProvider flt = CultureInfo.InvariantCulture.NumberFormat;
 
         string[] presets = File.ReadAllLines(CameraPresetPath);
         string[] targetPreset = presets[TargetPresetLabel].Split(',');
@@ -324,33 +352,38 @@ public class CameraOrbit : MonoBehaviour
         int CameraMode_tmp = int.Parse(targetPreset[1]);
         CameraModeDropdown.value = CameraMode_tmp;
 
-        transform.position = new Vector3(float.Parse(targetPreset[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[3], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[4], CultureInfo.InvariantCulture.NumberFormat));
-        transform.localRotation = Quaternion.Euler(float.Parse(targetPreset[5], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[6], CultureInfo.InvariantCulture.NumberFormat), float.Parse(targetPreset[7], CultureInfo.InvariantCulture.NumberFormat));
+        transform.position = new Vector3(float.Parse(targetPreset[2], flt), float.Parse(targetPreset[3], flt), float.Parse(targetPreset[4], flt));
+        transform.localRotation = Quaternion.Euler(float.Parse(targetPreset[5], flt), float.Parse(targetPreset[6], flt), float.Parse(targetPreset[7], flt));
 
         if(CameraMode_tmp == 0){
-            OrbitCamFovSlider.value = float.Parse(targetPreset[8], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamZoomSlider.value = float.Parse(targetPreset[9], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamZoomSpeedSlider.value = float.Parse(targetPreset[10], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamTargetHeightSlider.value = float.Parse(targetPreset[11], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamHeightSlider.value = float.Parse(targetPreset[12], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamRotationSlider.value = float.Parse(targetPreset[13], CultureInfo.InvariantCulture.NumberFormat);
-            OrbitCamSpeedSlider.value = float.Parse(targetPreset[14], CultureInfo.InvariantCulture.NumberFormat);
+            OrbitCamFovSlider.value = float.Parse(targetPreset[8], flt);
+            OrbitCamZoomSlider.value = float.Parse(targetPreset[9], flt);
+            OrbitCamZoomSpeedSlider.value = float.Parse(targetPreset[10], flt);
+            OrbitCamTargetHeightSlider.value = float.Parse(targetPreset[11], flt);
+            OrbitCamHeightSlider.value = float.Parse(targetPreset[12], flt);
+            OrbitCamRotationSlider.value = float.Parse(targetPreset[13], flt);
+            OrbitCamSpeedSlider.value = float.Parse(targetPreset[14], flt);
+
         }else if(CameraMode_tmp == 1){
-            FreeCamFovSlider.value = float.Parse(targetPreset[8], CultureInfo.InvariantCulture.NumberFormat);
-            FreeCamRotationSlider.value = float.Parse(targetPreset[9], CultureInfo.InvariantCulture.NumberFormat);
-            FreeCamMoveSpeedSlider.value = float.Parse(targetPreset[10], CultureInfo.InvariantCulture.NumberFormat);
-            FreeCamRotateSpeedSlider.value = float.Parse(targetPreset[11], CultureInfo.InvariantCulture.NumberFormat);
+            FreeCamFovSlider.value = float.Parse(targetPreset[8], flt);
+            FreeCamRotationSlider.value = float.Parse(targetPreset[9], flt);
+            FreeCamMoveSpeedSlider.value = float.Parse(targetPreset[10], flt);
+            FreeCamRotateSpeedSlider.value = float.Parse(targetPreset[11], flt);
         }else{
             return;
         }
 
+        if(isLoadModeToggle){
+            Light.transform.position = new Vector3(float.Parse(targetPreset[15], flt), float.Parse(targetPreset[16], flt), float.Parse(targetPreset[17], flt));
+            Light.transform.localRotation = Quaternion.Euler(float.Parse(targetPreset[18], flt), float.Parse(targetPreset[19], flt), float.Parse(targetPreset[20], flt));
+            Light.GetComponent<Light>().color = new Color(float.Parse(targetPreset[21], flt), float.Parse(targetPreset[22], flt), float.Parse(targetPreset[23], flt), float.Parse(targetPreset[24], flt));
+        }
 
     }
 
     public void onClickDel()
     {
 
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
         int TargetPresetLabel = TargetDropdown.value;
         string TargetPresetName = TargetDropdown.captionText.text;
 
@@ -372,8 +405,12 @@ public class CameraOrbit : MonoBehaviour
 
     public void onDropdownValueChanged()
     {
-        TMP_Dropdown TargetDropdown = GameObject.Find("LoadCamerasDropdown").GetComponent<TMP_Dropdown>();
         DropdownSelectedId = TargetDropdown.value;
+    }
+
+    public void onLoadModeToggleChanged()
+    {
+        isLoadModeToggle = TargetLoadModeToggle.isOn;
     }
     #endregion
 }

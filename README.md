@@ -76,8 +76,11 @@ MarshmallowAndroid: [UmaMusumeExplorer](https://github.com/MarshmallowAndroid/Um
 
 
 ## Change History
-## 2024/08/25
-Forked from [katboi01/UmaViewer](https://github.com/katboi01/UmaViewer)
+## 2024/08/27
+Eye and eyebrows linked with lights
 
 ## 2024/08/26
 Addition of save function for camera settings
+
+## 2024/08/25
+Forked from [katboi01/UmaViewer](https://github.com/katboi01/UmaViewer)
